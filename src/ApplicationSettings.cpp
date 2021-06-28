@@ -36,7 +36,7 @@ void ApplicationSettings::saveSetting( ApplicationSettings::SettingType setting,
 
     if ( hasLastRecentElement( setting ) )
     {
-        updateRecentFiles( setting, value.toString() );
+        updateRecentFiles( setting, value.toString(), UpdateFile );
     }
     else
     {
@@ -53,12 +53,28 @@ QVariant ApplicationSettings::loadSetting( ApplicationSettings::SettingType sett
     return m_settings.value( path, defaultValue );
 }
 
-void ApplicationSettings::updateRecentFiles( ApplicationSettings::SettingType setting, const QString &filename )
+void ApplicationSettings::removeSetting( ApplicationSettings::SettingType setting )
+{
+    m_settings.remove( m_settingsPaths[setting] );
+}
+
+void ApplicationSettings::removeSetting( ApplicationSettings::SettingType setting, const QVariant &value )
+{
+    if ( hasLastRecentElement( setting ) && !value.isNull() )
+    {
+        updateRecentFiles( setting, value.toString(), RemoveFile );
+    }
+}
+
+void ApplicationSettings::updateRecentFiles( ApplicationSettings::SettingType setting, const QString &filename, UpdateRecentFileType type )
 {
     QStringList l = loadSetting( setting ).toStringList();
 
     l.removeAll( filename );
-    l.prepend( filename );
+    if ( UpdateFile == type )
+    {
+        l.prepend( filename );
+    }
 
     while ( m_maxRecentFilesCount > 0 && l.size() > m_maxRecentFilesCount )
     {

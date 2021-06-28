@@ -86,6 +86,13 @@ namespace MichaLib
 class ApplicationSettings
 {
     public:
+
+        enum UpdateRecentFileType
+        {
+            UpdateFile,
+            RemoveFile,
+        };
+
         using WidgetsType = int;
         using SettingType = int;
     public:
@@ -138,6 +145,8 @@ class ApplicationSettings
 
         void saveSetting( SettingType setting, const QVariant &value );
         QVariant loadSetting( SettingType setting, const QVariant &defaultValue = QVariant() );
+        void removeSetting( SettingType setting );
+        void removeSetting( SettingType setting, const QVariant &value );
 
 
         /// Stores a specific value if it is not already saved in the user settings.
@@ -149,7 +158,7 @@ class ApplicationSettings
 
     protected:
         virtual bool hasLastRecentElement( SettingType setting ) const;
-        void updateRecentFiles( SettingType setting, const QString &filename );
+        void updateRecentFiles( SettingType setting, const QString &filename, UpdateRecentFileType type );
 
     protected:
         QMap<SettingType, QString> m_settingsPaths;
