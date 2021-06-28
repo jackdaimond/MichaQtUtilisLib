@@ -31,7 +31,11 @@ class MichaQtUtilisLibConan(ConanFile):
     #    # properly
 
     def build(self):
-        self.run("qmake MichaQtUtilisLib.pro CONFIG+=release")
+        if(self.settings.build_type == "Debug"):
+            self.run("qmake MichaQtUtilisLib.pro CONFIG+=debug")
+        else:
+            self.run("qmake MichaQtUtilisLib.pro CONFIG+=release")
+        
         self.run("nmake")
         # Explicit way:
         # self.run('cmake %s/hello %s'
